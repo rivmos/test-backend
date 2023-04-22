@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
+app.use(express.static('build'))
 
 let notes = [
   {
@@ -24,11 +25,11 @@ app.get('/', (req, res) => {
   res.send('Server Running Successfully')
 })
 
-app.get('/notes', (req, res) => {
+app.get('/api/notes', (req, res) => {
   res.json(notes)
 })
 
-app.get('/notes/:id',(req, res)=>{
+app.get('/api/notes/:id',(req, res)=>{
   const id = Number(req.params.id)
   const noteToSend = notes.find(note => note.id === id)
   if(noteToSend){
@@ -40,7 +41,7 @@ app.get('/notes/:id',(req, res)=>{
   }
 })
 
-app.delete('/notes/:id',(req, res)=> {
+app.delete('/api/notes/:id',(req, res)=> {
   const id = Number(req.params.id)
   notes = notes.filter(note => note.id !== id)
   res.status(204).end()
@@ -53,7 +54,7 @@ const getMaxId = () => {
 }
 
 
-app.post('/notes', (req, res)=>{
+app.post('/api/notes', (req, res)=>{
   const body = req.body
 
   if(!body.content ){
@@ -73,7 +74,7 @@ app.post('/notes', (req, res)=>{
 })
 
 
-const PORT = 3000
+const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
   console.log(`App Running At Port : ${PORT}`)
